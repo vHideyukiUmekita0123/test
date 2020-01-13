@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
  */
 public class EditCsvTest {
 
-    private static final String TEST_CSV_PATH="./target/classes/utilities/";
+    private static final String TEST_CSV_PATH="target/test-classes/utilities/";
     private static final String TEST_CSV_NAME="EditCsvTest.csv";
     private static final String NEW_CSV_NAME="NewEditCsvTest.csv";
     private static String[][] csvArray;

@@ -1,57 +1,59 @@
 package observer;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.platform.engine.discovery.ClassNameFilter.includeClassNamePatterns;
-import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
-import static org.junit.platform.engine.discovery.DiscoverySelectors.selectPackage;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Objects;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.launcher.Launcher;
-import org.junit.platform.launcher.LauncherDiscoveryRequest;
-import org.junit.platform.launcher.TestExecutionListener;
-import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
-import org.junit.platform.launcher.core.LauncherFactory;
-import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
+import org.junit.jupiter.api.TestInfo;
 
-import observer.testObserver.AddTestInfoInBeforeEachTest;
-import observer.testObserver.RemoveTestInfoInAfterEachTest;
+import testClass.TemplateTestClass;
 
 public class TestObserverTest {
-
-    private static final String EXECUTED_PACKAGE_NAME = "src.test.java.utilities.observer.testObserver";
 
     @Test
     public void TestObserverが取得できること() {
         assertFalse(Objects.isNull(TestObserver.getInstance()));
     }
 
-    @Test
-    public void beforeEachでのupdateによりexecTestに追加されていること() {
-        executeTest(AddTestInfoInBeforeEachTest.class, ".*AddTestInfoInBeforeEachTest.*");
+    @Nested
+    public class AddTestInfoInBeforeEachTest extends TemplateTestClass{
+        @Override
+        @BeforeAll
+        public void beforeAll(TestInfo testInfo) {
+            TestObserver testObserver = TestObserver.getInstance();
+            assertEquals(true, Objects.isNull(testObserver.getExecutingTestCase()));
+            getLogger().info("Success to execute beforeAll method.");
+        }
+
+        @Test
+        public void beforeEachでupdateによりexecTestが設定されること(TestInfo testInfo) {
+            TestObserver testObserver = TestObserver.getInstance();
+            assertFalse(Objects.isNull(testObserver.getExecutingTestCase()));
+            getLogger().info("Success to execute test method.");
+        }
     }
 
-    @Test
-    public void afterEachでupdateによりexecTestが空になること() {
-        executeTest(RemoveTestInfoInAfterEachTest.class, ".*RemoveTestInfoInAfterEach.*");
-    }
+    @Nested
+    public class RemoveTestInfoInAfterEachTest extends TemplateTestClass {
+        @Test
+        public void afterEachでupdateによりexecTestが空になること(TestInfo testInfo) {
+            TestObserver testObserver = TestObserver.getInstance();
+            assertFalse(Objects.isNull(testObserver.getExecutingTestCase()));
+            getLogger().info("Success to execute test method.");
+        }
 
-    private void executeTest(Class<?> selectClass, String classNamePattern) {
-        LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
-                .selectors(
-                        selectPackage(EXECUTED_PACKAGE_NAME),
-                        selectClass(selectClass)
-                )
-                .filters(
-                        includeClassNamePatterns(classNamePattern)
-                )
-                .build();
-        Launcher launcher = LauncherFactory.create();
-        TestExecutionListener listener = new SummaryGeneratingListener();
-        launcher.registerTestExecutionListeners(listener);
-
-        launcher.execute(request);
+        @Override
+        @AfterAll
+        public void afterAll(TestInfo testInfo) {
+            TestObserver testObserver = TestObserver.getInstance();
+            assertEquals(true, Objects.isNull(testObserver.getExecutingTestCase()));
+            getLogger().info("Success to execute afterAll method.");
+        }
     }
 
 }
