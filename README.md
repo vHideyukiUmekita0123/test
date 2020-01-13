@@ -1,6 +1,6 @@
 selenium-java-framework
 ====
-
+[![CircleCI](https://circleci.com/gh/suzuki-maruchan/selenium-java-framework/tree/master.svg?style=svg&circle-token=0d02ec8332f0b2a1f002d0d8471cf8163783cfb2)](https://circleci.com/gh/suzuki-maruchan/selenium-java-framework/tree/master)
 Framework to enable to test E2E-test by selenium and java.
 
 ## Description
