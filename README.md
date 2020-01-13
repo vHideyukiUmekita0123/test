@@ -1,7 +1,7 @@
-SELENIUM-JAVA-FRAMEWORK
+selenium-java-framework
 ====
 
-Flamework to enable to test E2E-test by selenium and java.
+Framework to enable to test E2E-test by selenium and java.
 
 ## Description
 ### Database
