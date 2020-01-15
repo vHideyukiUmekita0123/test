@@ -31,7 +31,7 @@ This package contains implements to automate test conveniently.
 Please command next:
 
 ~~~
-mvn test -Dtest=LeaveFootsteps#LetUsLeaveFootsteps
+mvn test -Dtest=SampleTestClass
 ~~~
 
 ## VS.
