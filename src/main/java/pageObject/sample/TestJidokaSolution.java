@@ -1,15 +1,13 @@
 package pageObject.sample;
 
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import exception.AutomatedTestException;
 import exception.IllegalPageException;
 import pageObject.AbstractPageObject;
 
 public class TestJidokaSolution extends AbstractPageObject {
+
+    private static final String PART_OF_URL = "test-automation";
 
     public TestJidokaSolution(WebDriver driver) throws IllegalPageException {
         super(driver);
@@ -17,16 +15,15 @@ public class TestJidokaSolution extends AbstractPageObject {
 
     @Override
     public boolean isDisplayed() {
-        WebDriverWait wait = new WebDriverWait(getWebDriver(), 5);
-        try {
-            wait.until(ExpectedConditions.urlMatches(".*test-automation.*"));
-        } catch (TimeoutException e) {
-            return false;
+        if (super.getWebDriver().getCurrentUrl().contains(PART_OF_URL)) {
+            return true;
         }
-        return true;
+        return false;
     }
 
-    public void downloadShiryo() throws AutomatedTestException {
-        getWebDriver().get(getWebDriver().getCurrentUrl());
+    @Override
+    public void waitUntilDisplayed() {
+        // TODO
     }
+
 }

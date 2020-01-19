@@ -22,6 +22,11 @@ public class Top extends AbstractPageObject {
         return false;
     }
 
+    @Override
+    public void waitUntilDisplayed() {
+        // TODO
+    }
+
     public static String getUrl() {
         return URL;
     }

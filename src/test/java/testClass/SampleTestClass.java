@@ -2,11 +2,9 @@ package testClass;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Set;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -28,14 +26,14 @@ public final class SampleTestClass extends TemplateTestClass {
     }
 
     @Override
-    @BeforeAll
+    @BeforeEach
     public void beforeAll(TestInfo testInfo) throws Exception {
         driver = WebDriverBuilder.create("C:\\AutoDownload");
     }
 
     // beforeEachはOverrideしない
 
-    @Test
+    @RepeatedTest(3)
     public void test_01() throws Exception {
         driver.get(Top.getUrl());
         Top topPage = new Top(driver);
@@ -52,23 +50,14 @@ public final class SampleTestClass extends TemplateTestClass {
         assertTrue(shiryoDownloadPage.isDisplayed(), "資料ダウンロードページが表示されていること");
 
         shiryoDownloadPage.clickTestJidokaSolution();
-        switchToNewWindow();
         TestJidokaSolution testJidokaSolutionPage = new TestJidokaSolution(driver);
         assertTrue(testJidokaSolutionPage.isDisplayed(), "テスト自動化ソリューションページが表示されていること");
     }
 
-    // afterEachはOverrideしない
-
     @Override
-    @AfterAll
+    @AfterEach
     public void afterAll(TestInfo testInfo) throws Exception {
         driver.quit();
-    }
-
-    public void switchToNewWindow() {
-        Set<String> windowHandles = driver.getWindowHandles();
-        windowHandles.remove(driver.getWindowHandle());
-        driver.switchTo().window(windowHandles.stream().findFirst().get());
     }
 
 }

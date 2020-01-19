@@ -24,6 +24,12 @@ public class HeaderArea extends AbstractPageObject {
     }
 
     @Override
+    public void waitUntilDisplayed() {
+        WebDriverWait wait = new WebDriverWait(getWebDriver(), getMaxWaitTime());
+        wait.until(ExpectedConditions.visibilityOfAllElements(jissekiTsuyomi));
+    }
+
+    @Override
     public boolean isDisplayed() {
         if (super.getWebDriver().findElements(By.tagName("header")).size() == 1) {
             return true;
