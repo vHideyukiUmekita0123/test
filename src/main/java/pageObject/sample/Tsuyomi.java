@@ -8,12 +8,13 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import exception.IllegalPageException;
 import pageObject.AbstractPageObject;
+import utilities.ScrollWIndow;
 
 public class Tsuyomi extends AbstractPageObject {
 
     private static final String HEADER_TITLE = "強み｜実績・強み｜株式会社ベリサーブ";
     /** 資料ダウンロードボタン */
-    @FindBy(xpath = "(//a[contains(text(), '資料ダウンロード')])[1]")
+    @FindBy(xpath = "//a[@class='c-btn u-fw-bold' and contains(text(), '資料ダウンロード')]")
     private WebElement shiryoDonload;
 
     public Tsuyomi(WebDriver driver) throws IllegalPageException {
@@ -28,10 +29,19 @@ public class Tsuyomi extends AbstractPageObject {
         return false;
     }
 
+    @Override
+    public void waitUntilDisplayed() {
+        WebDriverWait wait = new WebDriverWait(getWebDriver(), getMaxWaitTime());
+        wait.until(ExpectedConditions.visibilityOfAllElements(shiryoDonload));
+    }
+
     /** 「資料ダウンロードボタン」を押下 */
     public void clickShiryoDownload() {
+        ScrollWIndow.toElement(getWebDriver(), shiryoDonload);
+
         WebDriverWait wait = new WebDriverWait(getWebDriver(), 5);
         wait.until(ExpectedConditions.elementToBeClickable(shiryoDonload));
+
         shiryoDonload.click();
     }
 
