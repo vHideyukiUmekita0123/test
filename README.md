@@ -61,7 +61,16 @@ Google Chrome   79.0.3945.88 (Official Build) （64 ビット） (cohort: Stable
 ~~~
 
 ## Usage
-TBA
+### Step1
+Create new page object class in `src/test/main/java/pageObject` for each web pages to need.
+See: `src/main/java/pageObject/sample`
+
+### Step2
+Create new test class and write test script.
+See: `src/test/java/testClass/SampleTestClass.java`
+
+### Step3
+Over.
 
 ## Install
 ~~~
