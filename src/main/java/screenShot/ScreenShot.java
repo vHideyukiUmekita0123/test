@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.regex.Pattern;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -13,22 +14,46 @@ import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.FileImageOutputStream;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 
+import evidence.EvidencePath;
+import evidence.EvidencePathBuilder;
+import exception.IllegalPageException;
+import exception.ScreenShotException;
+import pageObject.sample.HeaderArea;
+import utilities.Property;
 import utilities.date.DateFormat;
 import utilities.date.DateUtils;
 
 // TODO:スクリーンショットはテスト対象ごとに実装する必要がある
 public class ScreenShot {
+
+    /** エビデンスを保存する親パス */
+    private static final String PARENT_EVIDENCE_PATH = Property.getSettingsProperty("evidencePath");
+    /** スクロースバーの幅 */
+    private static final int SCROLL_BAR_WIDTH = 18;
+    /** ヘッダーエリアにあるドロップシャドウの幅*/
+    private static final int DROP_SHADOW_WIDTH = 10;
+    /** 拡張子 */
+    private static final String EXTENSION = ".jpg";
+    /** 実行日の日付 */
+    private static final String TODAY = DateUtils.getCurrentLocalDateTime(DateFormat.yyyyMMdd);
     /** WebDriver */
     private WebDriver driver;
-    /** ファイルの保存先 */
-    private String folderPath;
+    /** ヘッダーエリアの高さ */
+    private int headerAreaHeight;
+    /** 画面の高さ */
+    int innerH;
+    /** 画面の幅 */
+    int innerW;
+    /** ページの高さ */
+    int scrollH;
+    /** 該当ページの幅 */
+    int scrollW;
     /** ビルド番号 */
     private String buildNum;
 
@@ -50,147 +75,104 @@ public class ScreenShot {
 
     /**
      * 全画面のスクリーンショットを撮る
-     *
-     * @param filename
-     *            ファイル名
      */
-    public void shot(String filename) {
-
-        // スクリーンショットを撮る前に1秒待機する
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e1) {
-            e1.printStackTrace();
-        }
-
-        // スクロール処理の待ち時間(単位:ms)
-        final int waitTimeScr = 200;
-
-        // 現在の日付を取得
-        String sysDate = DateUtils.getCurrentLocalDateTime(DateFormat.yyyyMMdd);
-
-        StackTraceElement[] ste = new Throwable().getStackTrace();
-        // 2行目のスタックトレースを取得する
-        String ste1 = ste[1].toString();
-
-        // "."と"("毎に分割する [1]…パッケージ名、[2]…画面名、[3]…ケース名
-        String[] folder = ste1.split("[.(]");
-
-        // 指定のフォルダに渡されたファイル名でスクリーンショットを保存する
-        Path path = null;
-        path = Paths.get(folderPath, sysDate + buildNum, folder[1], folder[2], folder[3], folder[4], filename + ".jpg");
-
-        TakesScreenshot ts = (TakesScreenshot) driver;
-
-        // JS実行用のExecuter
-        JavascriptExecutor jexec = (JavascriptExecutor) driver;
-
+    public void shot() {
         // 必要な画面サイズを取得
-        // 画面の高さ
-        int innerH = Integer.parseInt(String.valueOf(jexec.executeScript("return window.innerHeight")));
-
-        // 画面の幅
-        int innerW = Integer.parseInt(String.valueOf(jexec.executeScript("return window.innerWidth")));
-
-        // ページの高さ
-        int scrollH = Integer.parseInt(String.valueOf(jexec.executeScript("return document.documentElement.scrollHeight")));
-
-        // 該当ページの幅
-        int scrollW = Integer.parseInt(String.valueOf(jexec.executeScript("return document.documentElement.scrollWidth")));
+        JavascriptExecutor jexec = (JavascriptExecutor) driver;
+        innerH = Integer.parseInt(String.valueOf(jexec.executeScript("return window.innerHeight")));
+        innerW = Integer.parseInt(String.valueOf(jexec.executeScript("return window.innerWidth")));
+        scrollH = Integer.parseInt(String.valueOf(jexec.executeScript("return document.documentElement.scrollHeight")));
+        scrollW = Integer.parseInt(String.valueOf(jexec.executeScript("return document.documentElement.scrollWidth")));
 
         // 画像の加工準備(イメージ領域)
-        BufferedImage img = new BufferedImage(Integer.max(scrollW, innerW) - 16, scrollH, BufferedImage.TYPE_INT_RGB);
+        BufferedImage img = new BufferedImage(
+                Integer.max(scrollW, innerW) - SCROLL_BAR_WIDTH,
+                scrollH,
+                BufferedImage.TYPE_INT_RGB);
         Graphics g = img.getGraphics();
 
-        // ダイアログが出ていた場合と、スクロールが無かった場合は全体を撮る
-        if (innerH == scrollH || innerW < 1200) { // 画面幅が1200より小さければ、ダイアログが出現しているものと考える
-            // File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-            // try {
-            // FileUtils.copyFile(screenshot, path.toFile());
-            // } catch (IOException e) {
-            // e.printStackTrace();
-            // }
+        if (!scrollNeeded()) {
+            takeVisiblePartScreenShot(g, 0);
+            writeImage(img);
+            return;
+        }
 
-            BufferedImage imageParts = null;
-            try {
-                imageParts = ImageIO.read(ts.getScreenshotAs(OutputType.FILE));
-            } catch (WebDriverException | IOException e) {
-                e.printStackTrace();
-            }
+        // スクロールするときにHeaderAreaがついてくるのでその分をImageに描写しないようにする
+        try {
+            HeaderArea headerArea = new HeaderArea(driver);
+            headerAreaHeight  = headerArea.getHeaderAreaHeight() + DROP_SHADOW_WIDTH;
+        } catch (IllegalPageException e) {
+            headerAreaHeight = 0;
+        }
 
-            // 画面の画像を下から結合する。
-            g.drawImage(imageParts, 0, 0, null);
+        int topX = scrollH - innerH;
+        for (int i = 0; i <= scrollTimes(); i++) {
+            jexec.executeScript("window.scrollTo(0, " + topX + ")");
+            takeVisiblePartScreenShot(g, topX);
+            topX = Integer.max(0, topX - innerH + headerAreaHeight + SCROLL_BAR_WIDTH);
+        }
+        writeImage(img);
+    }
 
-            // 結合画面を保管
-            path.toFile().getParentFile().mkdirs();
+    private void takeVisiblePartScreenShot(Graphics graphics, int currentTop) {
+        TakesScreenshot ts = (TakesScreenshot) driver;
+        BufferedImage imageParts = null;
+        try {
+            imageParts = ImageIO.read(ts.getScreenshotAs(OutputType.FILE));
+        } catch (WebDriverException | IOException e) {
+            throw new ScreenShotException("スクリーンショットの取得に失敗しました。", e);
+        }
 
-            try (FileImageOutputStream output = new FileImageOutputStream(path.toFile())) {
-                ImageWriter writeImage = ImageIO.getImageWritersByFormatName("png").next();
-                ImageWriteParam writeParam = writeImage.getDefaultWriteParam();
-                writeImage.setOutput(output);
-                writeImage.write(null, new IIOImage(img, null, null), writeParam);
-                writeImage.dispose();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        // 画面の画像を下から結合する。
+        graphics.drawImage(imageParts,
+                0,
+                Integer.max(0, currentTop),
+                innerW,
+                Integer.max(0, currentTop + innerH) - SCROLL_BAR_WIDTH,
+                0,
+                0,
+                imageParts.getWidth(),
+                imageParts.getHeight() - SCROLL_BAR_WIDTH,
+                null);
+    }
+    private Path createEvidencePath() {
+        // src/test/java配下のパスが"."区切りで表現される。
+        // ディレクトリ構造表現にするために"."を"/"に置換する。
+        final String dot = ".";
+        final String slash = "/";
 
-        } else {
+        EvidencePath evidencePath = EvidencePathBuilder.create();
+        return Paths.get(
+                PARENT_EVIDENCE_PATH,
+                TODAY + buildNum,
+                evidencePath.getTestClassName().replaceAll(Pattern.quote(dot), slash),
+                evidencePath.getTestCaseName(),
+                ScreenShotInfo.getSingleton().getCaptureNumber(evidencePath) + EXTENSION);
+    }
 
-            // ヘッダの高さを取得
-            // +4 はドロップシャドウ分
-            int headerHeight = driver.findElement(By.id("main-header")).getSize().height + 10;
+    private void writeImage(BufferedImage image) {
+        Path writedPath = createEvidencePath();
+        writedPath.toFile().getParentFile().mkdirs();
 
-            // 固定エリアの高さを取得
-            // ドロップシャドウが入っているのでバッファとして10px余分に高さをもうける
-            if (driver.findElements(By.className("gyomu-header1")).size() > 0) {
-                headerHeight = (driver.findElement(By.className("gyomu-header1")).getSize().height
-                        + Integer.max(headerHeight, Integer.parseInt(driver.findElement(By.className("gyomu-header1")).getCssValue("top").replace("px", "")))) + 10;
-            } else if (driver.findElements(By.className("gyomu-header")).size() > 0) {
-                headerHeight = (driver.findElement(By.className("gyomu-header")).getSize().height
-                        + Integer.max(headerHeight, Integer.parseInt(driver.findElement(By.className("gyomu-header")).getCssValue("top").replace("px", "")))) + 10;
-            }
-
-            // スクロール回数
-            int scrollNum = (scrollH - headerHeight) / (innerH - headerHeight) + 1;
-
-            for (int i = 0; i <= scrollNum; i++) {
-
-                int topX = Integer.max(0, scrollH - (innerH - headerHeight) * (i + 1));
-
-                jexec.executeScript("window.scrollTo(0, " + topX + ")");
-
-                try {
-                    Thread.sleep(waitTimeScr);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                BufferedImage imageParts = null;
-                try {
-                    imageParts = ImageIO.read(ts.getScreenshotAs(OutputType.FILE));
-                } catch (WebDriverException | IOException e) {
-                    e.printStackTrace();
-                }
-
-                // 画面の画像を下から結合する。
-                g.drawImage(imageParts, 0, Integer.max(0, topX - headerHeight), null);
-            }
-
-            // 結合画面を保管
-            path.toFile().getParentFile().mkdirs();
-
-            try (FileImageOutputStream output = new FileImageOutputStream(path.toFile())) {
-                ImageWriter writeImage = ImageIO.getImageWritersByFormatName("png").next();
-                ImageWriteParam writeParam = writeImage.getDefaultWriteParam();
-                writeImage.setOutput(output);
-                writeImage.write(null, new IIOImage(img, null, null), writeParam);
-                writeImage.dispose();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try (FileImageOutputStream output = new FileImageOutputStream(writedPath.toFile())) {
+            ImageWriter writeImage = ImageIO.getImageWritersByFormatName("png").next();
+            ImageWriteParam writeParam = writeImage.getDefaultWriteParam();
+            writeImage.setOutput(output);
+            writeImage.write(null, new IIOImage(image, null, null), writeParam);
+            writeImage.dispose();
+        } catch (FileNotFoundException e) {
+            throw new ScreenShotException("イメージを書き込むパスが存在しません。", e);
+        } catch (IOException e) {
+            throw new ScreenShotException("イメージの書き込むに失敗しました。", e);
         }
     }
+
+    private boolean scrollNeeded() {
+        return innerH != scrollH;
+    }
+
+    private int scrollTimes() {
+        return (scrollH - headerAreaHeight - SCROLL_BAR_WIDTH) / (innerH - headerAreaHeight - SCROLL_BAR_WIDTH) + 1;
+    }
+
 }
