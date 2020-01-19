@@ -68,6 +68,8 @@ TBA
 git clone https://github.com/suzuki-maruchan/selenium-java-framework.git
 ~~~
 
+or download as Zip file from this page.
+
 ## Contribution
 Welcome always!!
 
