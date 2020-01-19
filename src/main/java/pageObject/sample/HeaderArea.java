@@ -12,6 +12,9 @@ import pageObject.AbstractPageObject;
 
 public class HeaderArea extends AbstractPageObject {
 
+    /** ヘッダーエリア */
+    @FindBy(className ="g-siteHeader_inner")
+    private WebElement headerArea;
     /** 実績・強み */
     @FindBy(css = "#pagetop > header > div.g-siteHeader_inner > div > div.g-headerMenu > div > div > nav > ul > li:nth-child(2) > a")
     private WebElement jissekiTsuyomi;
@@ -51,6 +54,10 @@ public class HeaderArea extends AbstractPageObject {
         WebDriverWait wait = new WebDriverWait(getWebDriver(), 5);
         wait.until(ExpectedConditions.elementToBeClickable(tsuyomi));
         tsuyomi.click();
+    }
+
+    public int getHeaderAreaHeight() {
+        return headerArea.getSize().height;
     }
 
 }
