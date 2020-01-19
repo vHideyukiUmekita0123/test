@@ -50,18 +50,23 @@ Default locale: ja_JP, platform encoding: MS932
 OS name: "windows 10", version: "10.0", arch: "amd64", family: "windows"
 ~~~
 
+### Git
+~~~
+git version 2.22.0.windows.1
+~~~
+
 ### GOOGLE CHROME
 ~~~
 Google Chrome   79.0.3945.88 (Official Build) （64 ビット） (cohort: Stable)
 ~~~
 
 ## Usage
+TBA
+
+## Install
 ~~~
 git clone https://github.com/suzuki-maruchan/selenium-java-framework.git
 ~~~
-
-## Install
-Nothing.
 
 ## Contribution
 Welcome always!!
