@@ -56,7 +56,9 @@ Google Chrome   79.0.3945.88 (Official Build) （64 ビット） (cohort: Stable
 ~~~
 
 ## Usage
-TBA
+~~~
+git clone https://github.com/suzuki-maruchan/selenium-java-framework.git
+~~~
 
 ## Install
 Nothing.
