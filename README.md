@@ -28,11 +28,7 @@ This is an object for Junit Test. This package contains interface, abstract, and
 This package contains implements to automate test conveniently.
 
 ## Demo
-Please command next:
-
-~~~
-mvn test -Dtest=SampleTestClass
-~~~
+![demo](https://user-images.githubusercontent.com/34160750/72681797-7bbe4400-3b0a-11ea-9037-c3d30395e254.gif)
 
 ## VS.
 TBA
