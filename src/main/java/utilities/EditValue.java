@@ -6,9 +6,6 @@ import java.util.Objects;
 
 public final class EditValue {
 
-    /**
-     * コンストラクタ
-     */
     private EditValue() {
     }
 

@@ -12,12 +12,6 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * PropertyUtilsのテストクラス
- *
- * @author ベリサーブ)yuuto suzuki
- *
- */
 public final class Property {
     /** ログ出力用のロガー定義 */
     private static Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

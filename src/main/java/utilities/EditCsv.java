@@ -11,12 +11,6 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * CSVを編集するクラス
- *
- * @author ベリサーブ) yuuto suzuki
- *
- */
 public final class EditCsv {
     /** テストデータ読み書き時の文字コード */
     private static final String WINDOWS_31J = "UTF8";
