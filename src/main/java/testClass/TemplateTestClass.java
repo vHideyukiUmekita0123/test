@@ -8,8 +8,8 @@ import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 
-import testClass.AbstractTestClass;
 import observer.TestObserver;
+import screenShot.IgnoreToScreenShot;
 
 @TestInstance(Lifecycle.PER_CLASS)
 public class TemplateTestClass extends AbstractTestClass {
@@ -17,11 +17,11 @@ public class TemplateTestClass extends AbstractTestClass {
     public TemplateTestClass() {
         super();
         addObserver(TestObserver.getInstance());
-        // TODO:
+        // TODO:必要があれば実装する
     }
 
     static {
-        // TODO:
+        // TODO:必要があれば実装する
     }
 
     @Override
@@ -53,7 +53,7 @@ public class TemplateTestClass extends AbstractTestClass {
 
     @Override
     public void updateScreenObject() {
-        // TODO
+        setScreenShot((IgnoreToScreenShot) getScreenShot());
     }
 
 }
