@@ -1,6 +1,5 @@
 package testClass;
 
-import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,13 +13,14 @@ import screenShot.ScreenShot;
 
 public abstract class AbstractTestClass implements TestCaseInterface {
 
-    private static final Logger LOGGER =  LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static Logger LOGGER;
     private WebDriver driver;
     private ScreenShot shot;
     private TestInfo testInfo;
     private List<Observer> observers = new ArrayList<Observer>();
 
     public AbstractTestClass() {
+        LOGGER =  LoggerFactory.getLogger(this.getClass());
     }
 
     protected abstract void beforeAll(TestInfo testInfo) throws Exception;
