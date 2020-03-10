@@ -3,14 +3,11 @@
         <h1>ソースのダウンロード</h1>
         <p>ソースのダウンロード方法を明記する。</p>
     </div>
-    <div>
+    <div class="index">
         <ol type="1">
-            <li>
-                <code>Clone or download</code> をクリック
-            </li>
-            <li>
-                Zipとしてダウンロード
-            </li>
+            <li><code>Clone or download</code> をクリック</li>
+            <li>Zipとしてダウンロード</li>
+            <li>Zipを解凍</li>
         </ol>
     </div>
     <div>
@@ -26,5 +23,13 @@
             <img border="0" src="../../resources/img/downloadZip.png">
         </p>
     <div>
+        <h1>Zipを解凍</h1>
+        <p>
+            ダウンロードしたZipファイルを解凍する。
+        </p>
+    </div>
+    <div>
+        <a href="setTestEnvironment.md">次へ</a>
+        <a href="../index.md">目次に戻る</a>
     </div>
 </body>
