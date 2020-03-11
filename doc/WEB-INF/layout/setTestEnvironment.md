@@ -3,7 +3,7 @@
         <h1>テスト環境の設定</h1>
         <p>テスト対象のアプリケーションをフレームワークに設定する方法を明記する。</P>
     </div>
-    <div class=index>
+    <div class="index">
         <ol type="1">
             <li>settings.propertiesを開く</li>
             <li>ChromeDriverのパスの設定</li>
@@ -97,7 +97,7 @@
     </div>
     <div>
         <a href="downloadSource.md">戻る</a>
-        <a href="setTestEnvironment.md">次へ</a>
+        <a href="setDatabase.md">次へ</a>
         <a href="../index.md">目次に戻る</a>
     </div>
 </body>
