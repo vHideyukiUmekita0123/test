@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
     <head>
         <title>目次</title>
@@ -15,7 +14,7 @@
         </div>
         <div>
             <h1>Index</h1>
-            <iframe src="layout/index.md" width="600" height="100"></iframe>
+            <iframe src="layout/index.html" width="600" height="100"></iframe>
         </div>
     </body>
 </html>
