@@ -61,31 +61,7 @@ Google Chrome   79.0.3945.88 (Official Build) （64 ビット） (cohort: Stable
 ~~~
 
 ## Usage
-### Step1
-Download from this repository by zip file. Don't `git clone` . Because it is need to modify common implement for each projects.
-
-### Step2
-Implement `src/main/java/testClass/TemplateTestClass.java` refer to `TODO` comment.
-
-### Step3
-Modify `src/main/resources/settings.properties` coforming with test target.
-
-### Step4
-Modify `src/main/resources/database.properties` conforming with test target database.
-
-### Step5
-Implement `src/main/java/screenShot/ScreenShot.java` conforming with test target.
-
-### Step6
-If necessary, implement and modify `src/main/java/database/Manager.java`.
-
-### Step7
-Create new page object class in `src/test/main/java/pageObject` for each web pages to need. <br>
-See: `src/main/java/pageObject/sample`
-
-### Step8
-Create new test class and write test script. <br>
-See: `src/test/java/testClass/SampleTestClass.java`
+<a href="doc/WEB-INF/index.md">See</a>
 
 ## Install
 `git clone https://github.com/suzuki-maruchan/selenium-java-framework.git` <br>
