@@ -1,3 +1,9 @@
+<head>
+        <title>目次</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width">
+        <link rel="stylesheet" href="../../resources/css/default.css"></link>
+</head>
 <body>
     <div>
         <h1>テスト環境の設定</h1>
