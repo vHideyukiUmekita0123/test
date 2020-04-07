@@ -31,7 +31,7 @@ public class Top extends AbstractPageObject {
         return URL;
     }
 
-    public static String getHeaderTitle() {
+    protected static String getHeaderTitle() {
         return HEADER_TITLE;
     }
 
