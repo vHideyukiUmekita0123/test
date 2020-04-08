@@ -16,7 +16,7 @@ import utilities.ScrollWIndow;
 
 public class ShiryoDownload extends AbstractPageObject {
 
-    private static final String HEADER_TITLE = "資料ダウンロード｜株式会社ベリサーブ";
+    private static final String HEADER_TITLE = "資料ダウンロード｜" + Top.getHeaderTitle();
     /** テスト自動化ソリューションボタン */
     @FindBy(xpath = "//a[contains(text(), 'テスト自動化ソリューション')]")
     private WebElement testJidokaSolution;

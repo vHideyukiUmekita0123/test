@@ -8,7 +8,7 @@ import pageObject.AbstractPageObject;
 public class Top extends AbstractPageObject {
 
     private static final String URL = "https://www.veriserve.co.jp/";
-    private static final String HEADER_TITLE = "株式会社ベリサーブ";
+    private static final String HEADER_TITLE = "ソフトウェアテスト・第三者検証のベリサーブ";
 
     public Top(WebDriver driver) throws IllegalPageException {
         super(driver);
@@ -29,6 +29,10 @@ public class Top extends AbstractPageObject {
 
     public static String getUrl() {
         return URL;
+    }
+
+    protected static String getHeaderTitle() {
+        return HEADER_TITLE;
     }
 
 }

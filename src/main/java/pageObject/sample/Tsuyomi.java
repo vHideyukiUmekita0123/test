@@ -12,7 +12,7 @@ import utilities.ScrollWIndow;
 
 public class Tsuyomi extends AbstractPageObject {
 
-    private static final String HEADER_TITLE = "強み｜実績・強み｜株式会社ベリサーブ";
+    private static final String HEADER_TITLE = "強み｜実績・強み｜" + Top.getHeaderTitle();
     /** 資料ダウンロードボタン */
     @FindBy(xpath = "//a[@class='c-btn u-fw-bold' and contains(text(), '資料ダウンロード')]")
     private WebElement shiryoDonload;
