@@ -49,8 +49,7 @@ public final class WebDriverBuilder {
         // 拡張機能を設定
         ChromeOptions options = new ChromeOptions();
         options.setExperimentalOption(AUTOMATION_EXTENSION_KEY, USE_EXTENSION);
-        // FIXME:v77以降で非表示にする方法が不明
-        if (DISPLAY_INFO_BAR) {
+        if (!DISPLAY_INFO_BAR) {
             options.setExperimentalOption(CHROME_INFO_BAR_KEY, Collections.singletonList("enable-automation"));
         }
 
