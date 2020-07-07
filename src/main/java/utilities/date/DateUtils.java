@@ -87,7 +87,7 @@ public final class DateUtils {
      * @param date
      * @param before
      * @param after
-     * @return 日付形式を変更する
+     * @return 日付形式を変更
      */
     public static String changeFormat(String date, DateFormat before, DateFormat after) {
         return toLocalDateTime(before, date).format(DateTimeFormatter.ofPattern(after.getFormat()));
